@@ -6,14 +6,19 @@ import '../styles/LoginPage.css';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('patient');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { username, password });
+      const response = await axios.post('http://localhost:5000/login', { username, password, userType });
       alert(`Logged in as ${response.data.role}`);
-      navigate('/profile', { state: { username, password } });
+      if (userType === 'Doctor') {
+        navigate('/doctor-profile', { state: { username, password, userType } });
+      } else {
+        navigate('/patient-profile', { state: { username, password, userType } });
+      }
     } catch (error) {
       alert('Invalid credentials');
     }
@@ -40,6 +45,13 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <select
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+            >
+              <option value="Patient">Patient</option>
+              <option value="Doctor">Doctor</option>
+            </select>
             <button type="submit">Login</button>
           </form>
         </div>
