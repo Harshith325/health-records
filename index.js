@@ -14,12 +14,12 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, userType } = req.body;
 
   // Placeholder logic for authentication
   if (username && password) {
     // In a real application, you would verify the username and password against a database
-    res.json({ role: 'user', token: 'fake-token' });
+    res.json({ role: userType, token: 'fake-token' });
   } else {
     res.status(401).send('Invalid credentials');
   }
