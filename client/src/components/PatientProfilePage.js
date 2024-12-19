@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const PatientProfilePage = () => {
   const location = useLocation();
   const { username, password } = location.state;
+  const [patientData, setPatientData] = useState({});
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/patient');
+        console.log('Fetched patient data:', response.data); // Add this line to log the fetched data
+        setPatientData(response.data);
+      } catch (error) {
+        console.error('Error fetching patient data:', error);
+      }
+    };
+
+    fetchPatientData();
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -24,10 +40,10 @@ const PatientProfilePage = () => {
                 <p className="card-text"></p>
               </div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item"><b>Patient ID:</b> </li>
-                <li className="list-group-item"><b>Name:</b> </li>
-                <li className="list-group-item"><b>DOB:</b> </li>
-                <li className="list-group-item"><b>Contact Info:</b> </li>
+                <li className="list-group-item"><b>Patient ID:</b> {patientData.Patient_ID}</li>
+                <li className="list-group-item"><b>Name:</b> {patientData.Name}</li>
+                <li className="list-group-item"><b>DOB:</b> {patientData.DOB}</li>
+                <li className="list-group-item"><b>Contact Info:</b> {patientData.Phone_Number}</li>
               </ul>
             </div>
           </div>
