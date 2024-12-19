@@ -10,16 +10,25 @@ const PatientProfilePage = () => {
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="col-md-4">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Patient Information</h5>
-              <hr />
-              <p className="card-text"><strong>Patient ID:</strong> </p>
-              <p className="card-text"><strong>Name:</strong> </p>
-              <p className="card-text"><strong>DOB:</strong> </p>
-              <p className="card-text"><strong>Address:</strong> </p>
-              <p className="card-text"><strong>Contact Info:</strong> </p>
+        <div className="col-md-4" style={{ paddingRight: '85px' }}>
+          <div className="shadow p-3 mb-5 bg-body-tertiary rounded" style={{ paddingTop: '150px' }}>
+            <div className="card">
+              <img
+                src="https://www.clipartmax.com/png/middle/179-1795475_patient-free-icon-patient-icon-png.png"
+                className="card-img-top mx-auto d-block"
+                style={{ height: '3%' }}
+                alt="Patient"
+              />
+              <div className="card-body">
+                <h5 className="card-title" style={{ paddingTop: '5px' }}>Patient Information</h5>
+                <p className="card-text"></p>
+              </div>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item"><b>Patient ID:</b> </li>
+                <li className="list-group-item"><b>Name:</b> </li>
+                <li className="list-group-item"><b>DOB:</b> </li>
+                <li className="list-group-item"><b>Contact Info:</b> </li>
+              </ul>
             </div>
           </div>
         </div>

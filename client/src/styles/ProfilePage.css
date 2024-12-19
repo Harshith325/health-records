@@ -37,10 +37,6 @@ body {
   position: relative;
 }
 
-.container {
-  margin-top: 80px; /* Adjust for header height */
-}
-
 .card {
   margin-bottom: 20px;
 }
@@ -71,4 +67,12 @@ body {
 p {
   font-size: 18px;
   color: #d1ecf1;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bg-body-tertiary {
+  background-color: #f8f9fa;
 }
