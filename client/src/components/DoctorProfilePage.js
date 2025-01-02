@@ -10,13 +10,13 @@ const DoctorProfilePage = () => {
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="col-md-4" style={{ paddingRight: '85px' }}>
-          <div className="shadow p-3 mb-5 bg-body-tertiary rounded" style={{ paddingTop: '50px' }}>
-            <div className="card" style={{ height: '100%' }}>
+        <div className="col-md-6" style={{ paddingRight: '85px' }}>
+          <div className="shadow p-3 mb-5 bg-body-tertiary rounded" style={{ paddingTop: '150px' }}>
+            <div className="card">
               <img
                 src="https://images.assetsdelivery.com/compings_v2/juliatim/juliatim1607/juliatim160700013.jpg"
                 className="card-img-top mx-auto d-block"
-                style={{ height: '200px', width: '200px', objectFit: 'cover' }}
+                style={{ height: '3%' }}
                 alt="Doctor"
               />
               <div className="card-body">
@@ -32,17 +32,15 @@ const DoctorProfilePage = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-8" style={{ paddingLeft: '5px' }}>
-          <div className="shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">Actions</h5>
-                <hr />
-                <div className="d-grid gap-2">
-                  <button className="btn btn-primary btn-lg">Appointments</button>
-                  <button className="btn btn-primary btn-lg">Prescription</button>
-                  <button className="btn btn-primary btn-lg">Medication</button>
-                </div>
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Actions</h5>
+              <hr />
+              <div className="d-grid gap-2">
+                <button className="btn btn-primary btn-lg">Appointments</button>
+                <button className="btn btn-primary btn-lg">Prescription</button>
+                <button className="btn btn-primary btn-lg">Medication</button>
               </div>
             </div>
           </div>
