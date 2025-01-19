@@ -5,12 +5,16 @@ import app from '../firebaseConfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/LoginPage.css';
+import axios from 'axios';
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('Patient');
+  const [name, setName] = useState('');
+  const [dob, setDob] = useState('');
+  const [specialty, setSpecialty] = useState('');
   const navigate = useNavigate();
   const auth = getAuth(app);
 
@@ -37,9 +41,9 @@ const LoginPage = () => {
       // Navigate based on user type
       setTimeout(() => {
         if (userType === 'Doctor') {
-          navigate('/doctor-profile', { state: { email, userType } });
+          navigate('/doctor-profile', { state: { username: email, userType } });
         } else {
-          navigate('/patient-profile', { state: { email, userType } });
+          navigate('/patient-profile', { state: { username: email, userType } });
         }
       }, 1000); // Add a delay for better UX
     } catch (error) {
@@ -55,12 +59,27 @@ const LoginPage = () => {
       notify(`Account created successfully! Signed up as ${userType}`, 'success');
       const user = userCredential.user;
 
+      // Insert patient or doctor data into MySQL database
+      if (userType === 'Patient') {
+        await axios.post('http://localhost:5000/patient', {
+          P_Em_Id: email,
+          Name: name,
+          DOB: dob,
+        });
+      } else if (userType === 'Doctor') {
+        await axios.post('http://localhost:5000/doctor', {
+          D_Em_Id: email,
+          Name: name,
+          Specialty: specialty,
+        });
+      }
+
       // Navigate based on user type
       setTimeout(() => {
         if (userType === 'Doctor') {
-          navigate('/doctor-profile', { state: { email, userType } });
+          navigate('/doctor-profile', { state: { username: email, userType } });
         } else {
-          navigate('/patient-profile', { state: { email, userType } });
+          navigate('/patient-profile', { state: { username: email, userType } });
         }
       }, 1000); // Add a delay for better UX
     } catch (error) {
@@ -98,6 +117,44 @@ const LoginPage = () => {
               className="form-input"
             />
           </div>
+          {isSignUp && (
+            <>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="form-input"
+                />
+              </div>
+              {userType === 'Patient' && (
+                <div className="form-group">
+                  <input
+                    type="date"
+                    placeholder="Date of Birth"
+                    value={dob}
+                    onChange={(e) => setDob(e.target.value)}
+                    required
+                    className="form-input"
+                  />
+                </div>
+              )}
+              {userType === 'Doctor' && (
+                <div className="form-group">
+                  <input
+                    type="text"
+                    placeholder="Specialty"
+                    value={specialty}
+                    onChange={(e) => setSpecialty(e.target.value)}
+                    required
+                    className="form-input"
+                  />
+                </div>
+              )}
+            </>
+          )}
           <div className="form-group">
             <select
               value={userType}
