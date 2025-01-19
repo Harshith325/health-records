@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
 const PatientProfilePage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { username, password } = location.state;
   const [patientData, setPatientData] = useState({});
 
@@ -13,7 +14,7 @@ const PatientProfilePage = () => {
     const fetchPatientData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/patient');
-        console.log('Fetched patient data:', response.data); // Add this line to log the fetched data
+        console.log('Fetched patient data:', response.data);
         setPatientData(response.data);
       } catch (error) {
         console.error('Error fetching patient data:', error);
@@ -22,6 +23,10 @@ const PatientProfilePage = () => {
 
     fetchPatientData();
   }, []);
+
+  const goToAppointments = () => {
+    navigate('/appointments', { state: { username, password } });
+  };
 
   return (
     <div className="container mt-5">
@@ -40,10 +45,9 @@ const PatientProfilePage = () => {
                 <p className="card-text"></p>
               </div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item"><b>Patient ID:</b> {patientData.Patient_ID}</li>
+                <li className="list-group-item"><b>Patient ID:</b> {patientData.P_Em_Id}</li>
                 <li className="list-group-item"><b>Name:</b> {patientData.Name}</li>
                 <li className="list-group-item"><b>DOB:</b> {patientData.DOB}</li>
-                <li className="list-group-item"><b>Contact Info:</b> {patientData.Phone_Number}</li>
               </ul>
             </div>
           </div>
@@ -54,7 +58,7 @@ const PatientProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
-                <button className="btn btn-primary btn-lg">Appointments</button>
+                <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
                 <button className="btn btn-primary btn-lg">Billing</button>
                 <button className="btn btn-primary btn-lg">Prescription</button>
                 <button className="btn btn-primary btn-lg">Health Logs</button>

@@ -11,11 +11,11 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'HMS',
+  port: process.env.DB_PORT || 3306
 });
 
 db.connect((err) => {
@@ -55,6 +55,118 @@ app.get('/patient', (req, res) => {
     }
     console.log('Fetched patient data:', results[0]); // Add this line to log the fetched data
     res.json(results[0]);
+  });
+});
+
+// New endpoint to fetch appointments
+app.get('/appointments', (req, res) => {
+  const { P_Em_Id, D_Em_Id } = req.query;
+  let query = 'SELECT * FROM appointment';
+  const queryParams = [];
+
+  if (P_Em_Id) {
+    query += ' WHERE P_Em_Id = ?';
+    queryParams.push(P_Em_Id);
+  } else if (D_Em_Id) {
+    query += ' WHERE D_Em_Id = ?';
+    queryParams.push(D_Em_Id);
+  }
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error('Error fetching appointments:', err);
+      res.status(500).send('Error fetching appointments');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// New endpoint to insert patient data
+app.post('/patient', (req, res) => {
+  const { P_Em_Id, Name, DOB } = req.body;
+  const query = 'INSERT INTO Patient (P_Em_Id, Name, DOB) VALUES (?, ?, ?)';
+
+  db.query(query, [P_Em_Id, Name, DOB], (err, results) => {
+    if (err) {
+      console.error('Error inserting patient data:', err);
+      res.status(500).send('Error inserting patient data');
+      return;
+    }
+    res.status(201).send('Patient data inserted successfully');
+  });
+});
+
+// New endpoint to insert doctor data
+app.post('/doctor', (req, res) => {
+  const { D_Em_Id, Name, Specialty } = req.body;
+  const query = 'INSERT INTO Doctor (D_Em_Id, Name, Specialty) VALUES (?, ?, ?)';
+
+  db.query(query, [D_Em_Id, Name, Specialty], (err, results) => {
+    if (err) {
+      console.error('Error inserting doctor data:', err);
+      res.status(500).send('Error inserting doctor data');
+      return;
+    }
+    res.status(201).send('Doctor data inserted successfully');
+  });
+});
+
+// New endpoint to fetch doctor data
+app.get('/doctor', (req, res) => {
+  const { D_Em_Id } = req.query;
+  const query = 'SELECT * FROM Doctor WHERE D_Em_Id = ?';
+
+  db.query(query, [D_Em_Id], (err, results) => {
+    if (err) {
+      console.error('Error fetching doctor data:', err);
+      res.status(500).send('Error fetching doctor data');
+      return;
+    }
+    res.json(results[0]);
+  });
+});
+
+// New endpoint to fetch all doctors
+app.get('/doctors', (req, res) => {
+  const query = 'SELECT D_Em_Id, Name, Specialty FROM Doctor';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching doctors:', err);
+      res.status(500).send('Error fetching doctors');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// New endpoint to fetch all patients
+app.get('/patients', (req, res) => {
+  const query = 'SELECT P_Em_Id, Name FROM Patient';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching patients:', err);
+      res.status(500).send('Error fetching patients');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// New endpoint to add an appointment
+app.post('/appointments', (req, res) => {
+  const { App_Id, P_Em_Id, D_Em_Id, Date, Time } = req.body;
+  const query = 'INSERT INTO appointment (App_Id, P_Em_Id, D_Em_Id, Date, Time) VALUES (?, ?, ?, ?, ?)';
+
+  db.query(query, [App_Id, P_Em_Id, D_Em_Id, Date, Time], (err, results) => {
+    if (err) {
+      console.error('Error adding appointment:', err);
+      res.status(500).send('Error adding appointment');
+      return;
+    }
+    res.status(201).send('Appointment added successfully');
   });
 });
 

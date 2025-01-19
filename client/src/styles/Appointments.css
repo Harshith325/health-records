@@ -1,0 +1,68 @@
+/* General styles */
+body {
+    background-color: #e9ecef;
+  }
+  
+  .navbar {
+    padding: 0px;
+  }
+  
+  .navbar-brand {
+    font-size: xx-large;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  .navbar-brand img {
+    padding-left: 10px;
+    padding-right: 15px;
+    height: 50px;
+  }
+  
+  .container {
+    padding-top: 70px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: large;
+  }
+  
+  .shadow {
+    padding: 3px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+  }
+  
+  .table {
+    width: 100%;
+    text-align: center;
+    table-layout: auto;
+  }
+  
+  .table th, .table td {
+    text-align: left;
+    width: 10%;
+  }
+  
+  .btn-info {
+    background-color: green;
+    color: azure;
+    border-color: green;
+    font-size: larger;
+    font-weight: 500;
+  }
+  
+  .progress-bar {
+    color: black;
+  }
+  
+  .progress-bar.bg-warning {
+    background-color: #ffc107 !important;
+  }
+  
+  .progress-bar.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  .progress-bar.bg-danger {
+    background-color: #dc3545 !important;
+  }
