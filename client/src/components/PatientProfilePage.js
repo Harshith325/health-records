@@ -59,6 +59,10 @@ const PatientProfilePage = () => {
     createPatientInFirestore();
   }, []);
 
+  const goToContact = () => {
+    navigate('/contact', { state: { username } });
+  };  
+
   const goToAppointments = () => {
     console.log('Navigating to appointments with:', { username, userType: 'patient' });
     navigate('/appointments', { state: { username, userType: 'patient' } });
@@ -112,6 +116,7 @@ const PatientProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
+                <button className="btn btn-primary btn-lg" onClick={goToContact}>Contact Doctors</button>
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
                 <button className="btn btn-primary btn-lg" onClick={goToBilling}>Billing</button>
                 <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>

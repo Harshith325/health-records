@@ -222,6 +222,56 @@ app.get('/billing', (req, res) => {
   });
 });
 
+// POST endpoint for appointments
+app.post('/appointments', (req, res) => {
+  const { P_Em_Id, D_Em_Id, Date, Time } = req.body;
+  const query = 'INSERT INTO appointment (P_Em_Id, D_Em_Id, Date, Time) VALUES (?, ?, ?, ?)';
+  
+  console.log('Creating appointment:', req.body);
+  
+  db.query(query, [P_Em_Id, D_Em_Id, Date, Time], (err, results) => {
+    if (err) {
+      console.error('Error creating appointment:', err);
+      res.status(500).send('Error creating appointment');
+      return;
+    }
+    res.status(201).json({ message: 'Appointment created successfully' });
+  });
+});
+
+// POST endpoint for prescriptions
+app.post('/prescriptions', (req, res) => {
+  const { P_Em_Id, D_Em_Id, Date, Notes } = req.body;
+  const query = 'INSERT INTO prescription (P_Em_Id, D_Em_Id, Date, Notes) VALUES (?, ?, ?, ?)';
+  
+  console.log('Creating prescription:', req.body);
+  
+  db.query(query, [P_Em_Id, D_Em_Id, Date, Notes], (err, results) => {
+    if (err) {
+      console.error('Error creating prescription:', err);
+      res.status(500).send('Error creating prescription');
+      return;
+    }
+    res.status(201).json({ message: 'Prescription created successfully' });
+  });
+});
+
+// POST endpoint for billing
+app.post('/billing', (req, res) => {
+  const { P_Em_Id, Amount, Status, Date } = req.body;
+  const query = 'INSERT INTO billing (P_Em_Id, Amount, Status, Date) VALUES (?, ?, ?, ?)';
+  
+  console.log('Creating billing:', req.body);
+  
+  db.query(query, [P_Em_Id, Amount, Status, Date], (err, results) => {
+    if (err) {
+      console.error('Error creating billing:', err);
+      res.status(500).send('Error creating billing');
+      return;
+    }
+    res.status(201).json({ message: 'Billing created successfully' });
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -35,6 +35,10 @@ const DoctorProfilePage = () => {
     navigate('/prescriptions', { state: { username, userType: 'doctor' } });
   };
 
+  const goToCreate = () => {
+    navigate('/create', { state: { username } });
+  };
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -65,8 +69,8 @@ const DoctorProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
+                <button className="btn btn-primary btn-lg" onClick={goToCreate}>Create</button>
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg">Billing</button>
                 <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
                 <button className="btn btn-primary btn-lg">Health Logs</button>
                 <button className="btn btn-primary btn-lg">Wearables</button>
