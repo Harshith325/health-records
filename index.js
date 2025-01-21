@@ -86,6 +86,49 @@ app.get('/appointments', (req, res) => {
     res.json(results);
   });
 });
+app.get('/prescriptions', (req, res) => {
+  const { P_Em_Id, D_Em_Id } = req.query;
+  let query;
+  let params;
+
+  if (P_Em_Id) {
+    query = `
+      SELECT p.*, GROUP_CONCAT(
+        CONCAT(m.Name, ' (', m.Dosage, ' - ', m.Frequency, ')')
+        SEPARATOR '; '
+      ) as Medications
+      FROM prescription p
+      LEFT JOIN medication m ON p.Pre_ID = m.Pre_ID
+      WHERE p.P_Em_Id = ?
+      GROUP BY p.Pre_ID`;
+    params = [P_Em_Id];
+  } else if (D_Em_Id) {
+    query = `
+      SELECT p.*, GROUP_CONCAT(
+        CONCAT(m.Name, ' (', m.Dosage, ' - ', m.Frequency, ')')
+        SEPARATOR '; '
+      ) as Medications
+      FROM prescription p
+      LEFT JOIN medication m ON p.Pre_ID = m.Pre_ID
+      WHERE p.D_Em_Id = ?
+      GROUP BY p.Pre_ID`;
+    params = [D_Em_Id];
+  } else {
+    return res.status(400).send('Either P_Em_Id or D_Em_Id is required');
+  }
+
+  console.log('Executing prescription query:', query, 'with params:', params);
+  
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      res.status(500).send('Error fetching prescriptions');
+      return;
+    }
+    console.log('Prescription results:', results);
+    res.json(results);
+  });
+});
 
 // New endpoint to insert patient data
 app.post('/patient', (req, res) => {
@@ -156,6 +199,25 @@ app.get('/patients', (req, res) => {
       res.status(500).send('Error fetching patients');
       return;
     }
+    res.json(results);
+  });
+});
+
+// Add this new endpoint after other endpoints
+app.get('/billing', (req, res) => {
+  const { P_Em_Id } = req.query;
+  const query = 'SELECT * FROM billing WHERE P_Em_Id = ?';
+  const params = [P_Em_Id];
+
+  console.log('Executing billing query:', query, 'with params:', params);
+  
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      res.status(500).send('Error fetching billing data');
+      return;
+    }
+    console.log('Billing query results:', results);
     res.json(results);
   });
 });

@@ -7,9 +7,8 @@ import DoctorProfilePage from './components/DoctorProfilePage';
 import Appointments from './components/Appointments';
 import HealthLogs from './components/HealthLogs';
 import WearableData from './components/WearableData';
-//import Billing from './components/Billing';<Route path="/billing" element={<Billing />} />
-       // <Route path="/prescription" element={<Prescription />} />
-//import Prescription from './components/Prescription';
+import BillingPage from './components/BillingPage';
+import PrescriptionPage from './components/PrescriptionPage';
 // import Particles from 'react-tsparticles';
 
 const App = () => {
@@ -80,6 +79,8 @@ const App = () => {
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/health-logs" element={<HealthLogs />} />
         <Route path="/wearable-data" element={<WearableData />} />
+        <Route path="/billing" element={<BillingPage />} />
+        <Route path="/prescriptions" element={<PrescriptionPage />} />
       </Routes>
     </Router>
   );
