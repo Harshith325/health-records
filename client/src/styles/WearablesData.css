@@ -1,0 +1,27 @@
+.wearables-container {
+    padding: 20px;
+}
+
+.wearables-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.wearables-table th,
+.wearables-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.wearables-table th {
+    background-color: #f2f2f2;
+}
+
+.loading, .error, .no-data {
+    text-align: center;
+    margin-top: 20px;
+    font-style: italic;
+    color: gray;
+}

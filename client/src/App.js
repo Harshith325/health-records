@@ -5,10 +5,12 @@ import LoginPage from './components/LoginPage';
 import PatientProfilePage from './components/PatientProfilePage';
 import DoctorProfilePage from './components/DoctorProfilePage';
 import Appointments from './components/Appointments';
+import HealthLogs from './components/HealthLogs';
+import WearableData from './components/WearableData';
 //import Billing from './components/Billing';<Route path="/billing" element={<Billing />} />
        // <Route path="/prescription" element={<Prescription />} />
 //import Prescription from './components/Prescription';
-import Particles from 'react-tsparticles';
+// import Particles from 'react-tsparticles';
 
 const App = () => {
   const particlesInit = (main) => {
@@ -21,7 +23,7 @@ const App = () => {
 
   return (
     <Router>
-      <Particles
+      {/* <Particles
         id="tsparticles"
         init={particlesInit}
         loaded={particlesLoaded}
@@ -69,14 +71,15 @@ const App = () => {
           },
           detectRetina: true,
         }}
-      />
+      /> */}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/patient-profile" element={<PatientProfilePage />} />
         <Route path="/doctor-profile" element={<DoctorProfilePage />} />
         <Route path="/appointments" element={<Appointments />} />
-        
+        <Route path="/health-logs" element={<HealthLogs />} />
+        <Route path="/wearable-data" element={<WearableData />} />
       </Routes>
     </Router>
   );
