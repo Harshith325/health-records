@@ -50,8 +50,8 @@ const Appointments = () => {
           </thead>
           <tbody>
             {appointments.map(appointment => (
-              <tr key={appointment.App_Id}>
-                <td>{appointment.App_Id}</td>
+              <tr key={appointment.App_ID}>
+                <td>{appointment.App_ID}</td>
                 <td>{appointment.Date}</td>
                 <td>{appointment.Time}</td>
                 <td>{appointment.P_Em_Id}</td>
