@@ -31,6 +31,10 @@ const DoctorProfilePage = () => {
     navigate('/appointments', { state: { username, userType: 'doctor' } });
   };
 
+  const goToPrescriptions = () => {
+    navigate('/prescriptions', { state: { username, userType: 'doctor' } });
+  };
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -63,7 +67,7 @@ const DoctorProfilePage = () => {
               <div className="d-grid gap-2">
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
                 <button className="btn btn-primary btn-lg">Billing</button>
-                <button className="btn btn-primary btn-lg">Prescription</button>
+                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
                 <button className="btn btn-primary btn-lg">Health Logs</button>
                 <button className="btn btn-primary btn-lg">Wearables</button>
               </div>

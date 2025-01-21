@@ -64,6 +64,14 @@ const PatientProfilePage = () => {
     navigate('/appointments', { state: { username, userType: 'patient' } });
   };
 
+  const goToBilling = () => {
+    navigate('/billing', { state: { username } });
+  };
+
+  const goToPrescriptions = () => {
+    navigate('/prescriptions', { state: { username, userType: 'patient' } });
+  };
+
   const goToHealthLogs = () => {
     navigate('/health-logs', { state: { username } });
   };
@@ -105,8 +113,8 @@ const PatientProfilePage = () => {
               <hr />
               <div className="d-grid gap-2">
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg">Billing</button>
-                <button className="btn btn-primary btn-lg">Prescription</button>
+                <button className="btn btn-primary btn-lg" onClick={goToBilling}>Billing</button>
+                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
                 <button className="btn btn-primary btn-lg" onClick={goToHealthLogs}>Health Logs</button>
                 <button className="btn btn-primary btn-lg" onClick={goToWearables}>Wearables</button>
               </div>
