@@ -60,7 +60,8 @@ const PatientProfilePage = () => {
   }, []);
 
   const goToAppointments = () => {
-    navigate('/appointments', { state: { username, password } });
+    console.log('Navigating to appointments with:', { username, userType: 'patient' });
+    navigate('/appointments', { state: { username, userType: 'patient' } });
   };
 
   const goToHealthLogs = () => {
