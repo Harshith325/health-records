@@ -27,7 +27,8 @@ const DoctorProfilePage = () => {
   }, [username]);
 
   const goToAppointments = () => {
-    navigate('/appointments', { state: { username, password } });
+    console.log('Navigating to appointments with:', { username, userType: 'doctor' });
+    navigate('/appointments', { state: { username, userType: 'doctor' } });
   };
 
   return (

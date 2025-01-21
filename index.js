@@ -58,26 +58,31 @@ app.get('/patient', (req, res) => {
   });
 });
 
-// New endpoint to fetch appointments
 app.get('/appointments', (req, res) => {
   const { P_Em_Id, D_Em_Id } = req.query;
-  let query = 'SELECT * FROM appointment';
-  const queryParams = [];
+  let query;
+  let params;
 
   if (P_Em_Id) {
-    query += ' WHERE P_Em_Id = ?';
-    queryParams.push(P_Em_Id);
+    query = 'SELECT * FROM appointment WHERE P_Em_Id = ?';
+    params = [P_Em_Id];
   } else if (D_Em_Id) {
-    query += ' WHERE D_Em_Id = ?';
-    queryParams.push(D_Em_Id);
+    query = 'SELECT * FROM appointment WHERE D_Em_Id = ?';
+    params = [D_Em_Id];
+  } else {
+    query = 'SELECT * FROM appointment';
+    params = [];
   }
 
-  db.query(query, queryParams, (err, results) => {
+  console.log('Executing query:', query, 'with params:', params);
+  
+  db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching appointments:', err);
+      console.error('Database error:', err);
       res.status(500).send('Error fetching appointments');
       return;
     }
+    console.log('Query results:', results);
     res.json(results);
   });
 });
@@ -155,20 +160,6 @@ app.get('/patients', (req, res) => {
   });
 });
 
-// New endpoint to add an appointment
-app.post('/appointments', (req, res) => {
-  const { App_Id, P_Em_Id, D_Em_Id, Date, Time } = req.body;
-  const query = 'INSERT INTO appointment (App_Id, P_Em_Id, D_Em_Id, Date, Time) VALUES (?, ?, ?, ?, ?)';
-
-  db.query(query, [App_Id, P_Em_Id, D_Em_Id, Date, Time], (err, results) => {
-    if (err) {
-      console.error('Error adding appointment:', err);
-      res.status(500).send('Error adding appointment');
-      return;
-    }
-    res.status(201).send('Appointment added successfully');
-  });
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
