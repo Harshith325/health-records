@@ -11,13 +11,13 @@ import BillingPage from './components/BillingPage';
 import PrescriptionPage from './components/PrescriptionPage';
 import CreatePage from './components/CreatePage';
 import ContactPage from './components/ContactPage';
-import Layout from './components/layout/Layout';
+// import Layout from './components/layout/Layout';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Layout />}>
+        <Route>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/patient-profile" element={<PatientProfilePage />} />
