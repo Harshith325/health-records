@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import '../styles/WearablesData.css'; // Import your CSS file
+import '../styles/Header.css';
 
 const WearablesData = () => {
     const location = useLocation();
@@ -53,6 +54,10 @@ const WearablesData = () => {
     }
 
     return (
+        <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
         <div className="wearables-container">
             <h2>Wearables Data</h2>
             <table className="wearables-table">
@@ -72,6 +77,7 @@ const WearablesData = () => {
                 </tbody>
             </table>
         </div>
+        </>
     );
 };
 

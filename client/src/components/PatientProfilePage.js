@@ -4,6 +4,7 @@ import { db } from '../firebaseConfig'; // Import Firestore instance
 import { doc, setDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Header.css';
 
 const PatientProfilePage = () => {
   const location = useLocation();
@@ -85,6 +86,10 @@ const PatientProfilePage = () => {
   };
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-4" style={{ paddingRight: '85px' }}>
@@ -128,6 +133,7 @@ const PatientProfilePage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

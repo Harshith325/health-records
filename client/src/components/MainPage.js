@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/MainPage.css';
+import '../styles/Header.css';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -48,13 +49,13 @@ const MainPage = () => {
   return (
     <>
       <div className="header">
-        <h1>Health Records App</h1>
+        <h1>PulsePoint App</h1>
       </div>
       <div className="container">
         <div id="particles-js"></div>
         <div className="box">
-          <h1>Welcome to the Health Records App</h1>
-        </div>
+          <h1>Welcome to PulsePoint App</h1>
+          </div>
         <div className="box">
           <p>Please log in to access your health records.</p>
         </div>

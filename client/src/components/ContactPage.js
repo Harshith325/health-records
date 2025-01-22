@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Appointments.css';
+import '../styles/Header.css';
 
 const ContactPage = () => {
   const [doctors, setDoctors] = useState([]);
@@ -21,6 +22,10 @@ const ContactPage = () => {
   }, []);
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Contact Doctors</h2>
       <hr />
@@ -45,6 +50,7 @@ const ContactPage = () => {
         </table>
       </div>
     </div>
+    </>
   );
 };
 
