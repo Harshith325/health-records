@@ -12,6 +12,8 @@ import PrescriptionPage from './components/PrescriptionPage';
 import CreatePage from './components/CreatePage';
 import ContactPage from './components/ContactPage';
 import Layout from './components/layout/Layout';
+import UploadPrescriptionPage from './components/UploadPrescriptionPage';
+
 
 const App = () => {
   return (
@@ -29,6 +31,7 @@ const App = () => {
           <Route path="/prescriptions" element={<PrescriptionPage />} />
           <Route path="/create" element={<CreatePage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/upload-prescription" element={<UploadPrescriptionPage />} />
         </Route>
       </Routes>
     </Router>

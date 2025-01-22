@@ -35,7 +35,8 @@ const CreatePage = () => {
       const endpoint = `http://localhost:5000/${selectedTable}`;
       const submitData = {
         ...formData,
-        D_Em_Id: username
+        D_Em_Id: username,
+        skipMedication: false
       };
       
       console.log('Submitting data:', submitData, 'to endpoint:', endpoint);
