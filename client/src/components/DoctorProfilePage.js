@@ -40,6 +40,10 @@ const DoctorProfilePage = () => {
     navigate('/create', { state: { username } });
   };
 
+  const goToUploadPrescription = () => {
+    navigate('/upload-prescription', { state: { username } });
+  };
+
   return (
     <>
     <div className="header">
@@ -74,11 +78,10 @@ const DoctorProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
-                <button className="btn btn-primary btn-lg" onClick={goToCreate}>Create</button>
+                <button className="btn btn-primary btn-lg" onClick={goToCreate}>Enter Data</button>
+                <button className="btn btn-primary btn-lg" onClick={goToUploadPrescription}>Upload Prescription</button>
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
-                <button className="btn btn-primary btn-lg">Health Logs</button>
-                <button className="btn btn-primary btn-lg">Wearables</button>
+                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescriptions</button>
               </div>
             </div>
           </div>
