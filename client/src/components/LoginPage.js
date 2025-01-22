@@ -96,9 +96,6 @@ const LoginPage = () => {
     </div>
     <div className="login-container">
       <ToastContainer />
-      <div className="header">
-        <h1>Health Records App</h1>
-      </div>
       <div className="auth-card">
         <h1 className="auth-title">{isSignUp ? 'Sign Up' : 'Login'}</h1>
         <form onSubmit={isSignUp ? handleSignUp : handleLogin}>
