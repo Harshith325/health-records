@@ -15,11 +15,12 @@ import Layout from './components/layout/Layout';
 import UploadPrescriptionPage from './components/UploadPrescriptionPage';
 
 
+
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Layout />}>
+        <Route>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/patient-profile" element={<PatientProfilePage />} />

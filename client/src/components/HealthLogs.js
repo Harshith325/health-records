@@ -1,56 +1,76 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { useLocation } from 'react-router-dom';
-// import '../styles/HealthLogs.css';
-import '../styles/Header.css';
+import { doc, getDoc } from 'firebase/firestore';
 
-const HealthLogs = () => {
-  const location = useLocation();
-  const { username } = location.state || {};
-  const [healthRecords, setHealthRecords] = useState([]);
+const HealthRecords = ({ username }) => {
+    const [healthRecordsData, setHealthRecordsData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!username) return;
+    useEffect(() => {
+        const fetchHealthRecords = async () => {
+            try {
+                const patientRef = doc(db, 'patients', username);
+                const patientDoc = await getDoc(patientRef);
 
-    const fetchHealthRecords = async () => {
-      try {
-        const recordsRef = collection(db, 'patients', username, 'health_records');
-        const snapshot = await getDocs(recordsRef);
-        const records = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setHealthRecords(records);
-      } catch (error) {
-        console.error('Error fetching health records:', error);
-      }
-    };
+                if (patientDoc.exists()) {
+                    const patientData = patientDoc.data();
+                    const records = patientData.healthRecords;
 
-    fetchHealthRecords();
-  }, [username]);
+                    if (Array.isArray(records)) {
+                        setHealthRecordsData(records);
+                    } else if (records) {
+                        console.error("healthRecords is not an array:", records);
+                        setError("Invalid health records format in Firestore.");
+                    } else {
+                        setHealthRecordsData([]); // Handle missing healthRecords
+                    }
+                } else {
+                    setError("Patient not found.");
+                }
+            } catch (err) {
+                console.error("Error fetching health records:", err);
+                setError(`Failed to fetch health records: ${err.message}`); // Include error message
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  return (
-    <>
-    <div className="header">
-      <h1>PulsePoint App</h1>
-    </div>
-    <div className="health-logs">
-      <h1>Health Records</h1>
-      {healthRecords.length > 0 ? (
-        <ul>
-          {healthRecords.map((record) => (
-            <li key={record.id}>
-              <p><strong>Diagnosis:</strong> {record.Diagnosis}</p>
-              <p><strong>Prescription:</strong> {record.Prescription}</p>
-              <p><strong>Doctor:</strong> {record.Doctor}</p>
-              <p><strong>Date:</strong> {record.Date}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No health records found.</p>
-      )}
-    </div>
-    </>
-  );
+        fetchHealthRecords();
+    }, [username]);
+
+    if (loading) {
+        return <div>Loading health records...</div>;
+    }
+
+    if (error) {
+        return <div className="text-danger">Error: {error}</div>; // Use text-danger for error styling
+    }
+
+    if (!healthRecordsData || healthRecordsData.length === 0) {
+        return <p>No health records available.</p>;
+    }
+
+    return (
+        <div className="table-responsive">
+            <table className="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Body Part</th>
+                        <th>Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {healthRecordsData.map((record, index) => (
+                        <tr key={index}>
+                            <td>{record?.bodyPart ?? "N/A"}</td>
+                            <td>{record?.condition ?? "N/A"}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 };
 
-export default HealthLogs;
+export default HealthRecords;

@@ -4,7 +4,6 @@ import { db } from '../firebaseConfig'; // Import Firestore instance
 import { doc, setDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/Header.css';
 
 const PatientProfilePage = () => {
   const location = useLocation();
@@ -31,8 +30,17 @@ const PatientProfilePage = () => {
     return wearables;
   };
 
-  // Function to create patient entry in Firestore
-  const createPatientInFirestore = async () => {
+  // Function to generate fake health records
+  const generateFakeHealthRecords = () => ({
+    heart: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
+    lungs: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
+    liver: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
+    kidneys: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
+    brain: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)]
+  });
+
+  // Function to create or fetch patient entry in Firestore
+  const fetchOrCreatePatientInFirestore = async () => {
     try {
       const patientRef = doc(db, 'patients', username);
       const patientSnapshot = await getDoc(patientRef);
@@ -43,13 +51,22 @@ const PatientProfilePage = () => {
           Name: `Patient ${username}`,
           DOB: '1990-01-01', // Static DOB for now
           healthLogs: generateFakeHealthLogs(),
-          wearablesData: generateFakeWearablesData()
+          wearablesData: generateFakeWearablesData(),
+          healthRecords: generateFakeHealthRecords()
         };
 
         await setDoc(patientRef, fakeData);
         setPatientData(fakeData);
       } else {
-        setPatientData(patientSnapshot.data());
+        const existingData = patientSnapshot.data();
+        const updatedData = {
+          ...existingData,
+          healthLogs: existingData.healthLogs || generateFakeHealthLogs(),
+          wearablesData: existingData.wearablesData || generateFakeWearablesData(),
+          healthRecords: existingData.healthRecords || generateFakeHealthRecords()
+        };
+        await setDoc(patientRef, updatedData);
+        setPatientData(updatedData);
       }
     } catch (error) {
       console.error('Error creating or fetching patient data:', error);
@@ -57,24 +74,11 @@ const PatientProfilePage = () => {
   };
 
   useEffect(() => {
-    createPatientInFirestore();
+    fetchOrCreatePatientInFirestore();
   }, []);
 
-  const goToContact = () => {
-    navigate('/contact', { state: { username } });
-  };  
-
   const goToAppointments = () => {
-    console.log('Navigating to appointments with:', { username, userType: 'patient' });
-    navigate('/appointments', { state: { username, userType: 'patient' } });
-  };
-
-  const goToBilling = () => {
-    navigate('/billing', { state: { username } });
-  };
-
-  const goToPrescriptions = () => {
-    navigate('/prescriptions', { state: { username, userType: 'patient' } });
+    navigate('/appointments', { state: { username, password } });
   };
 
   const goToHealthLogs = () => {
@@ -85,11 +89,11 @@ const PatientProfilePage = () => {
     navigate('/wearable-data', { state: { username } });
   };
 
+  const goToHealthRecords = () => {
+    navigate('/health-records', { state: { username } });
+  };
+
   return (
-    <>
-    <div className="header">
-      <h1>PulsePoint App</h1>
-    </div>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-4" style={{ paddingRight: '85px' }}>
@@ -121,19 +125,41 @@ const PatientProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
-                <button className="btn btn-primary btn-lg" onClick={goToContact}>Contact Doctors</button>
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg" onClick={goToBilling}>Billing</button>
-                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
-                <button className="btn btn-primary btn-lg" onClick={goToHealthLogs}>Health Logs</button>
+                <button className="btn btn-primary btn-lg">Billing</button>
+                <button className="btn btn-primary btn-lg">Prescription</button>
+                {/* <button className="btn btn-primary btn-lg" onClick={goToHealthLogs}>Health Logs</button> */}
                 <button className="btn btn-primary btn-lg" onClick={goToWearables}>Wearables</button>
               </div>
             </div>
           </div>
+          <div className="card mt-3">
+            <div className="card-body">
+              <h5 className="card-title">Health Records</h5>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Body Part</th>
+                    <th>Condition</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {patientData.healthRecords?.map((record, index) => (
+                    <tr key={index}>
+                      <td>{record.bodyPart}</td>
+                      <td>{record.condition}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+        {/* <div className="col-md-8"> */}
+          
+        {/* </div> */}
       </div>
     </div>
-    </>
   );
 };
 
