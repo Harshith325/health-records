@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/LoginPage.css';
 import axios from 'axios';
+import '../styles/Header.css';
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -89,6 +90,10 @@ const LoginPage = () => {
   };
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="login-container">
       <ToastContainer />
       <div className="header">
@@ -180,6 +185,7 @@ const LoginPage = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useLocation } from 'react-router-dom';
 // import '../styles/HealthLogs.css';
+import '../styles/Header.css';
 
 const HealthLogs = () => {
   const location = useLocation();
@@ -27,6 +28,10 @@ const HealthLogs = () => {
   }, [username]);
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="health-logs">
       <h1>Health Records</h1>
       {healthRecords.length > 0 ? (
@@ -44,6 +49,7 @@ const HealthLogs = () => {
         <p>No health records found.</p>
       )}
     </div>
+    </>
   );
 };
 

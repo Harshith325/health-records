@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Appointments.css';
+import '../styles/Header.css';
+
 
 const Appointments = () => {
   const location = useLocation();
@@ -34,6 +36,10 @@ const Appointments = () => {
   }, [username, userType]);
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Your Appointments</h2>
       <hr />
@@ -62,6 +68,7 @@ const Appointments = () => {
         </table>
       </div>
     </div>
+    </>
   );
 };
 

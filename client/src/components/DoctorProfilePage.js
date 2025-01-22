@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import '../styles/Header.css';
 
 const DoctorProfilePage = () => {
   const location = useLocation();
@@ -40,6 +41,10 @@ const DoctorProfilePage = () => {
   };
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-4" style={{ paddingRight: '85px' }}>
@@ -80,6 +85,7 @@ const DoctorProfilePage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

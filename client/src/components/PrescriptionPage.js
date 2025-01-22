@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Appointments.css';
+import '../styles/Header.css';
 
 const PrescriptionPage = () => {
   const location = useLocation();
@@ -30,6 +31,10 @@ const PrescriptionPage = () => {
   }, [username, userType]);
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Your Prescriptions</h2>
       <hr />
@@ -60,6 +65,7 @@ const PrescriptionPage = () => {
 </table>
       </div>
     </div>
+    </>
   );
 };
 

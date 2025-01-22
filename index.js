@@ -240,19 +240,61 @@ app.post('/appointments', (req, res) => {
 });
 
 // POST endpoint for prescriptions
-app.post('/prescriptions', (req, res) => {
-  const { P_Em_Id, D_Em_Id, Date, Notes } = req.body;
-  const query = 'INSERT INTO prescription (P_Em_Id, D_Em_Id, Date, Notes) VALUES (?, ?, ?, ?)';
+app.post('/prescriptions', async (req, res) => {
+  const { P_Em_Id, D_Em_Id, Date, Notes, MedicineName, Dosage, Frequency } = req.body;
   
-  console.log('Creating prescription:', req.body);
-  
-  db.query(query, [P_Em_Id, D_Em_Id, Date, Notes], (err, results) => {
-    if (err) {
-      console.error('Error creating prescription:', err);
-      res.status(500).send('Error creating prescription');
-      return;
+  // Start transaction
+  db.beginTransaction(async (err) => {
+    if (err) { 
+      console.error('Error starting transaction:', err);
+      return res.status(500).send('Error creating prescription');
     }
-    res.status(201).json({ message: 'Prescription created successfully' });
+
+    try {
+      // First insert prescription
+      const prescriptionQuery = 'INSERT INTO prescription (P_Em_Id, D_Em_Id, Date, Notes) VALUES (?, ?, ?, ?)';
+      db.query(prescriptionQuery, [P_Em_Id, D_Em_Id, Date, Notes], (err, prescResult) => {
+        if (err) {
+          return db.rollback(() => {
+            console.error('Error creating prescription:', err);
+            res.status(500).send('Error creating prescription');
+          });
+        }
+
+        // Get the inserted prescription ID
+        const Pre_ID = prescResult.insertId;
+
+        // Then insert medication
+        const medicationQuery = 'INSERT INTO medication (Pre_ID, Name, Dosage, Frequency) VALUES (?, ?, ?, ?)';
+        db.query(medicationQuery, [Pre_ID, MedicineName, Dosage, Frequency], (err) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error('Error creating medication:', err);
+              res.status(500).send('Error creating medication');
+            });
+          }
+
+          // Commit transaction
+          db.commit((err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error('Error committing transaction:', err);
+                res.status(500).send('Error creating prescription and medication');
+              });
+            }
+            res.status(201).json({ 
+              message: 'Prescription and medication created successfully',
+              Pre_ID: Pre_ID
+            });
+          });
+        });
+      });
+    } catch (error) {
+      db.rollback(() => {
+        console.error('Error in transaction:', error);
+        res.status(500).send('Error creating prescription and medication');
+      });
+    }
   });
 });
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Header.css';
 
 const CreatePage = () => {
   const location = useLocation();
@@ -95,46 +96,79 @@ const CreatePage = () => {
           </div>
         );
 
-      case 'prescriptions':
-        return (
-          <div className="mb-3">
+        case 'prescriptions':
+          return (
             <div className="mb-3">
-              <label className="form-label">Patient</label>
-              <select 
-                className="form-control"
-                value={formData.P_Em_Id || ''}
-                onChange={e => setFormData({...formData, P_Em_Id: e.target.value})}
-                required
-              >
-                <option value="">Select Patient</option>
-                {patients.map(patient => (
-                  <option key={patient.P_Em_Id} value={patient.P_Em_Id}>
-                    {patient.Name} ({patient.P_Em_Id})
-                  </option>
-                ))}
-              </select>
+              <div className="mb-3">
+                <label className="form-label">Patient</label>
+                <select 
+                  className="form-control"
+                  value={formData.P_Em_Id || ''}
+                  onChange={e => setFormData({...formData, P_Em_Id: e.target.value})}
+                  required
+                >
+                  <option value="">Select Patient</option>
+                  {patients.map(patient => (
+                    <option key={patient.P_Em_Id} value={patient.P_Em_Id}>
+                      {patient.Name} ({patient.P_Em_Id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={formData.Date || ''}
+                  onChange={e => setFormData({...formData, Date: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Notes</label>
+                <textarea
+                  className="form-control"
+                  value={formData.Notes || ''}
+                  onChange={e => setFormData({...formData, Notes: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <h5>Medication Details</h5>
+                <div className="mb-3">
+                  <label className="form-label">Medicine Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData.MedicineName || ''}
+                    onChange={e => setFormData({...formData, MedicineName: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Dosage</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData.Dosage || ''}
+                    onChange={e => setFormData({...formData, Dosage: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Frequency</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData.Frequency || ''}
+                    onChange={e => setFormData({...formData, Frequency: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
             </div>
-            <div className="mb-3">
-              <label className="form-label">Date</label>
-              <input
-                type="date"
-                className="form-control"
-                value={formData.Date || ''}
-                onChange={e => setFormData({...formData, Date: e.target.value})}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Notes</label>
-              <textarea
-                className="form-control"
-                value={formData.Notes || ''}
-                onChange={e => setFormData({...formData, Notes: e.target.value})}
-                required
-              />
-            </div>
-          </div>
-        );
+          );
 
       case 'billing':
         return (
@@ -199,6 +233,10 @@ const CreatePage = () => {
   };
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Create New Entry</h2>
       <hr />
@@ -224,6 +262,7 @@ const CreatePage = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
