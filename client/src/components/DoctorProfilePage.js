@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/ProfilePage.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import SummaryModal from './SummaryModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/ProfilePage.css';
 import '../styles/Header.css';
 
 const DoctorProfilePage = () => {
@@ -10,22 +11,54 @@ const DoctorProfilePage = () => {
   const navigate = useNavigate();
   const { username, password } = location.state;
   const [doctorData, setDoctorData] = useState({});
+  const [showSummary, setShowSummary] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState('');
+  const [patients, setPatients] = useState([]);
+  const [summary, setSummary] = useState('');
 
   useEffect(() => {
-    const fetchDoctorData = async () => {
+    const validateAndFetchData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/doctor', {
           params: { D_Em_Id: username }
         });
-        console.log('Fetched doctor data:', response.data);
+        
+        if (!response.data) {
+          navigate('/login');
+          return;
+        }
+        
         setDoctorData(response.data);
       } catch (error) {
-        console.error('Error fetching doctor data:', error);
+        console.error('Error:', error);
+        navigate('/login');
       }
     };
 
-    fetchDoctorData();
-  }, [username]);
+    validateAndFetchData();
+  }, [username, navigate]);
+  
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/patients');
+        setPatients(response.data);
+      } catch (error) {
+        console.error('Error fetching patients:', error);
+      }
+    };
+    fetchPatients();
+  }, []);
+
+  const generateSummary = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/generate-summary/${selectedPatient}`);
+      setSummary(response.data.summary);
+      setShowSummary(true);
+    } catch (error) {
+      console.error('Error generating summary:', error);
+    }
+  };
 
   const goToAppointments = () => {
     console.log('Navigating to appointments with:', { username, userType: 'doctor' });
@@ -46,23 +79,27 @@ const DoctorProfilePage = () => {
 
   return (
     <>
-    <div className="header">
-      <h1>PulsePoint App</h1>
-    </div>
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-4" style={{ paddingRight: '85px' }}>
-          <div className="shadow p-3 mb-5 bg-body-tertiary rounded" style={{ paddingTop: '150px' }}>
+      <div className="header">
+        <h1>PulsePoint App</h1>
+      </div>
+      <div className="container" style={{ marginTop: '50px', padding: '20px' }}>
+        <div className="row" style={{ gap: '20px' }}>
+          <div className="col-md-4">
             <div className="card">
               <img
                 src="https://images.assetsdelivery.com/compings_v2/juliatim/juliatim1607/juliatim160700013.jpg"
                 className="card-img-top mx-auto d-block"
-                style={{ height: '3%' }}
+                style={{ 
+                  height: '150px',
+                  width: '150px',
+                  objectFit: 'cover',
+                  borderRadius: '50%',
+                  margin: '20px auto'
+                }}
                 alt="Doctor"
               />
               <div className="card-body">
-                <h5 className="card-title" style={{ paddingTop: '5px' }}>Doctor Information</h5>
-                <p className="card-text"></p>
+                <h5 className="card-title text-center">Doctor Information</h5>
               </div>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item"><b>Doctor ID:</b> {doctorData.D_Em_Id}</li>
@@ -71,23 +108,34 @@ const DoctorProfilePage = () => {
               </ul>
             </div>
           </div>
-        </div>
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Actions</h5>
-              <hr />
-              <div className="d-grid gap-2">
-                <button className="btn btn-primary btn-lg" onClick={goToCreate}>Enter Data</button>
-                <button className="btn btn-primary btn-lg" onClick={goToUploadPrescription}>Upload Prescription</button>
-                <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescriptions</button>
+          <div className="col-md-7">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Actions</h5>
+                <hr />
+                <div className="d-grid gap-2">
+                  <button className="btn btn-primary btn-lg" onClick={goToCreate}>Enter Data</button>
+                  <button className="btn btn-primary btn-lg" onClick={goToUploadPrescription}>Upload Prescription</button>
+                  <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
+                  <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescriptions</button>
+                  <button className="btn btn-primary btn-lg" onClick={() => setShowSummary(true)}>Generate Summary</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {showSummary && (
+        <SummaryModal 
+          show={showSummary}
+          onHide={() => setShowSummary(false)}
+          patients={patients}
+          selectedPatient={selectedPatient}
+          setSelectedPatient={setSelectedPatient}
+          generateSummary={generateSummary}
+          summary={summary}
+        />
+      )}
     </>
   );
 };

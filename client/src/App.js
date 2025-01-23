@@ -20,7 +20,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route>
+      <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/patient-profile" element={<PatientProfilePage />} />

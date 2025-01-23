@@ -4,12 +4,20 @@ import { db } from '../firebaseConfig'; // Import Firestore instance
 import { doc, setDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
 import '../styles/ProfilePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Header.css';
+import axios from 'axios';
+
 
 const PatientProfilePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { username, password } = location.state;
-  const [patientData, setPatientData] = useState({});
+  const [patientData, setPatientData] = useState({
+    healthRecords: [], // Initialize with empty array
+    healthLogs: {},
+    wearablesData: []
+  });
+  const [loading, setLoading] = useState(true);
 
   // Function to generate fake health logs
   const generateFakeHealthLogs = () => ({
@@ -31,54 +39,96 @@ const PatientProfilePage = () => {
   };
 
   // Function to generate fake health records
-  const generateFakeHealthRecords = () => ({
-    heart: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
-    lungs: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
-    liver: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
-    kidneys: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)],
-    brain: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)]
-  });
+  const generateFakeHealthRecords = () => ([
+    { organ: 'Heart', status: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)] },
+    { organ: 'Lungs', status: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)] },
+    { organ: 'Liver', status: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)] },
+    { organ: 'Kidneys', status: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)] },
+    { organ: 'Brain', status: ['Good', 'Moderate', 'Prone to Disease'][Math.floor(Math.random() * 3)] }
+  ]);
 
   // Function to create or fetch patient entry in Firestore
   const fetchOrCreatePatientInFirestore = async () => {
     try {
+      setLoading(true);
       const patientRef = doc(db, 'patients', username);
       const patientSnapshot = await getDoc(patientRef);
 
       if (!patientSnapshot.exists()) {
+        const healthRecords = generateFakeHealthRecords();
+        console.log('Generated new health records:', healthRecords);
+        
         const fakeData = {
           P_Em_Id: username,
           Name: `Patient ${username}`,
-          DOB: '1990-01-01', // Static DOB for now
+          DOB: '1990-01-01',
           healthLogs: generateFakeHealthLogs(),
           wearablesData: generateFakeWearablesData(),
-          healthRecords: generateFakeHealthRecords()
+          healthRecords: healthRecords
         };
 
         await setDoc(patientRef, fakeData);
+        console.log('Setting new patient data:', fakeData);
         setPatientData(fakeData);
       } else {
         const existingData = patientSnapshot.data();
-        const updatedData = {
-          ...existingData,
-          healthLogs: existingData.healthLogs || generateFakeHealthLogs(),
-          wearablesData: existingData.wearablesData || generateFakeWearablesData(),
-          healthRecords: existingData.healthRecords || generateFakeHealthRecords()
-        };
-        await setDoc(patientRef, updatedData);
-        setPatientData(updatedData);
+        console.log('Fetched existing data:', existingData);
+        
+        // Ensure health records exist
+        if (!existingData.healthRecords || !existingData.healthRecords.length) {
+          existingData.healthRecords = generateFakeHealthRecords();
+          await setDoc(patientRef, existingData);
+        }
+        setPatientData(existingData);
       }
     } catch (error) {
-      console.error('Error creating or fetching patient data:', error);
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrCreatePatientInFirestore();
-  }, []);
+    const validateAndFetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:5000/patient', {
+          params: { P_Em_Id: username }
+        });
+        
+        if (!response.data) {
+          navigate('/login');
+          return;
+        }
+        
+        fetchOrCreatePatientInFirestore();
+      } catch (error) {
+        console.error('Error:', error);
+        navigate('/login');
+      }
+    };
+  
+    validateAndFetchData();
+  }, [username, navigate]);
 
+  console.log('Current patientData:', patientData); // Debug current state
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const goToContact = () => {
+    navigate('/contact', { state: { username } });
+  };  
   const goToAppointments = () => {
-    navigate('/appointments', { state: { username, password } });
+    console.log('Navigating to appointments with:', { username, userType: 'patient' });
+    navigate('/appointments', { state: { username, userType: 'patient' } });
+  };
+  const goToBilling = () => {
+    navigate('/billing', { state: { username } });
+  };
+  const goToPrescriptions = () => {
+    navigate('/prescriptions', { state: { username, userType: 'patient' } });
   };
 
   const goToHealthLogs = () => {
@@ -94,6 +144,10 @@ const PatientProfilePage = () => {
   };
 
   return (
+    <>
+    <div className="header">
+      <h1>PulsePoint App</h1>
+    </div>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-4" style={{ paddingRight: '85px' }}>
@@ -125,10 +179,10 @@ const PatientProfilePage = () => {
               <h5 className="card-title">Actions</h5>
               <hr />
               <div className="d-grid gap-2">
+                <button className="btn btn-primary btn-lg" onClick={goToContact}>Contact Doctors</button>
                 <button className="btn btn-primary btn-lg" onClick={goToAppointments}>Appointments</button>
-                <button className="btn btn-primary btn-lg">Billing</button>
-                <button className="btn btn-primary btn-lg">Prescription</button>
-                {/* <button className="btn btn-primary btn-lg" onClick={goToHealthLogs}>Health Logs</button> */}
+                <button className="btn btn-primary btn-lg" onClick={goToBilling}>Billing</button>
+                <button className="btn btn-primary btn-lg" onClick={goToPrescriptions}>Prescription</button>
                 <button className="btn btn-primary btn-lg" onClick={goToWearables}>Wearables</button>
               </div>
             </div>
@@ -144,13 +198,19 @@ const PatientProfilePage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {patientData.healthRecords?.map((record, index) => (
-                    <tr key={index}>
-                      <td>{record.bodyPart}</td>
-                      <td>{record.condition}</td>
-                    </tr>
-                  ))}
-                </tbody>
+  {Array.isArray(patientData.healthRecords) ? 
+    patientData.healthRecords.map((record, index) => (
+      <tr key={index}>
+        <td>{record.organ || record.bodyPart || 'N/A'}</td>
+        <td>{record.status || record.condition || 'N/A'}</td>
+      </tr>
+    ))
+    : 
+    <tr>
+      <td colSpan="2">No health records available</td>
+    </tr>
+  }
+</tbody>
               </table>
             </div>
           </div>
@@ -160,6 +220,7 @@ const PatientProfilePage = () => {
         {/* </div> */}
       </div>
     </div>
+    </>
   );
 };
 
