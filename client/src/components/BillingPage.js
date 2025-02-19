@@ -31,7 +31,7 @@ const BillingPage = () => {
   return (
     <>
     <div className="header">
-      <h1>PulsePoint App</h1>
+      <h1>PulsePoint</h1>
     </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Your Billing History</h2>
@@ -50,7 +50,7 @@ const BillingPage = () => {
             {billingData.map(bill => (
               <tr key={bill.Bill_ID}>
                 <td>{bill.Bill_ID}</td>
-                <td>${bill.Amount}</td>
+                <td>₹{bill.Amount}</td>
                 <td>{bill.Status}</td>
                 <td>{new Date(bill.Date).toLocaleDateString()}</td>
               </tr>

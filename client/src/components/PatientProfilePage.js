@@ -146,12 +146,12 @@ const PatientProfilePage = () => {
   return (
     <>
     <div className="header">
-      <h1>PulsePoint App</h1>
+      <h1>PulsePoint</h1>
     </div>
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-4" style={{ paddingRight: '85px' }}>
-          <div className="shadow p-3 mb-5 bg-body-tertiary rounded" style={{ paddingTop: '150px' }}>
+          <div className="shadow p-3 mb-5 bg-body-tertiary rounded">
             <div className="card">
               <img
                 src="https://www.clipartmax.com/png/middle/179-1795475_patient-free-icon-patient-icon-png.png"

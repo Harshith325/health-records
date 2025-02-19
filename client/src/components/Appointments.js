@@ -38,7 +38,7 @@ const Appointments = () => {
   return (
     <>
     <div className="header">
-      <h1>PulsePoint App</h1>
+      <h1>PulsePoint</h1>
     </div>
     <div className="container mt-5">
       <h2 style={{ textAlign: 'center' }}>Your Appointments</h2>

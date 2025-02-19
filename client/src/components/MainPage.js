@@ -20,7 +20,7 @@ const MainPage = () => {
           alt="PulsePoint Logo" 
           className="header-logo"
         />
-        <h1>PulsePoint App</h1>
+        <h1>PulsePoint</h1>
       </div>
     </div>
       <div className="container">

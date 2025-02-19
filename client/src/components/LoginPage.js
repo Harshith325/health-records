@@ -114,7 +114,7 @@ const handleLogin = async (e) => {
   return (
     <>
     <div className="header">
-      <h1>PulsePoint App</h1>
+      <h1>PulsePoint</h1>
     </div>
     <div className="login-container">
       <ToastContainer />
