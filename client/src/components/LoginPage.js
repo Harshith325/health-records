@@ -32,26 +32,48 @@ const LoginPage = () => {
     });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      notify(`Logged in successfully as ${userType}`, 'success');
-      const user = userCredential.user;
-
-      // Navigate based on user type
-      setTimeout(() => {
-        if (userType === 'Doctor') {
-          navigate('/doctor-profile', { state: { username: email, userType } });
-        } else {
-          navigate('/patient-profile', { state: { username: email, userType } });
-        }
-      }, 1000); // Add a delay for better UX
-    } catch (error) {
-      console.error(error);
-      notify('Invalid credentials or user does not exist', 'error');
+// Update handleLogin function
+const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    // First authenticate with Firebase
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    
+    // Then verify user exists in MySQL
+    let exists = false;
+    if (userType === 'Doctor') {
+      const response = await axios.get('http://localhost:5000/doctor', {
+        params: { D_Em_Id: email }
+      });
+      exists = response.data !== null && Object.keys(response.data).length > 0;
+    } else {
+      const response = await axios.get('http://localhost:5000/patient', {
+        params: { P_Em_Id: email }
+      });
+      exists = response.data !== null && Object.keys(response.data).length > 0;
     }
-  };
+
+    if (!exists) {
+      notify('User not found in database. Please sign up first.', 'error');
+      await auth.signOut(); // Sign out from Firebase
+      return;
+    }
+
+    notify(`Logged in successfully as ${userType}`, 'success');
+    
+    // Navigate based on user type
+    setTimeout(() => {
+      if (userType === 'Doctor') {
+        navigate('/doctor-profile', { state: { username: email, userType } });
+      } else {
+        navigate('/patient-profile', { state: { username: email, userType } });
+      }
+    }, 1000);
+  } catch (error) {
+    console.error(error);
+    notify('Invalid credentials or user does not exist', 'error');
+  }
+};
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -92,7 +114,7 @@ const LoginPage = () => {
   return (
     <>
     <div className="header">
-      <h1>PulsePoint App</h1>
+      <h1>PulsePoint</h1>
     </div>
     <div className="login-container">
       <ToastContainer />

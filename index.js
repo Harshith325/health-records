@@ -43,18 +43,19 @@ app.post('/login', (req, res) => {
   }
 });
 
-// New endpoint to fetch the first patient data
+// Update patient GET endpoint
 app.get('/patient', (req, res) => {
-  const query = 'SELECT * FROM Patient LIMIT 1';
+  const { P_Em_Id } = req.query;
+  const query = 'SELECT * FROM Patient WHERE P_Em_Id = ?';
+  const params = [P_Em_Id];
 
-  db.query(query, (err, results) => {
+  db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching patient data:', err);
       res.status(500).send('Error fetching patient data');
       return;
     }
-    console.log('Fetched patient data:', results[0]); // Add this line to log the fetched data
-    res.json(results[0]);
+    res.json(results[0] || null);
   });
 });
 
@@ -239,64 +240,6 @@ app.post('/appointments', (req, res) => {
   });
 });
 
-/* POST endpoint for prescriptions
-app.post('/prescriptions', async (req, res) => {
-  const { P_Em_Id, D_Em_Id, Date, Notes, MedicineName, Dosage, Frequency } = req.body;
-  
-  // Start transaction
-  db.beginTransaction(async (err) => {
-    if (err) { 
-      console.error('Error starting transaction:', err);
-      return res.status(500).send('Error creating prescription');
-    }
-
-    try {
-      // First insert prescription
-      const prescriptionQuery = 'INSERT INTO prescription (P_Em_Id, D_Em_Id, Date, Notes) VALUES (?, ?, ?, ?)';
-      db.query(prescriptionQuery, [P_Em_Id, D_Em_Id, Date, Notes], (err, prescResult) => {
-        if (err) {
-          return db.rollback(() => {
-            console.error('Error creating prescription:', err);
-            res.status(500).send('Error creating prescription');
-          });
-        }
-
-        // Get the inserted prescription ID
-        const Pre_ID = prescResult.insertId;
-
-        // Then insert medication
-        const medicationQuery = 'INSERT INTO medication (Pre_ID, Name, Dosage, Frequency) VALUES (?, ?, ?, ?)';
-        db.query(medicationQuery, [Pre_ID, MedicineName, Dosage, Frequency], (err) => {
-          if (err) {
-            return db.rollback(() => {
-              console.error('Error creating medication:', err);
-              res.status(500).send('Error creating medication');
-            });
-          }
-
-          // Commit transaction
-          db.commit((err) => {
-            if (err) {
-              return db.rollback(() => {
-                console.error('Error committing transaction:', err);
-                res.status(500).send('Error creating prescription and medication');
-              });
-            }
-            res.status(201).json({ 
-              message: 'Prescription and medication created successfully',
-              Pre_ID: Pre_ID
-            });
-          });
-        });
-      });
-    } catch (error) {
-      db.rollback(() => {
-        console.error('Error in transaction:', error);
-        res.status(500).send('Error creating prescription and medication');
-      });
-    }
-  });
-}); */
 app.post('/prescriptions', async (req, res) => {
   const { P_Em_Id, D_Em_Id, Date, Notes, MedicineName, Dosage, Frequency, skipMedication } = req.body;
   
@@ -384,10 +327,6 @@ app.post('/prescriptions', async (req, res) => {
     }
   });
 });
-
-
-
-
 // POST endpoint for billing
 app.post('/billing', (req, res) => {
   const { P_Em_Id, Amount, Status, Date } = req.body;
@@ -404,6 +343,46 @@ app.post('/billing', (req, res) => {
     res.status(201).json({ message: 'Billing created successfully' });
   });
 });
+
+app.get('/generate-summary/:P_Em_Id', (req, res) => {
+  const { P_Em_Id } = req.params;
+
+  const query = `
+    SELECT 
+      p.Pre_ID,
+      p.Date,
+      p.Notes,
+      GROUP_CONCAT(
+        CONCAT(m.Name, ' (', m.Dosage, ' - ', m.Frequency, ')')
+        SEPARATOR '; '
+      ) as Medications
+    FROM prescription p
+    LEFT JOIN medication m ON p.Pre_ID = m.Pre_ID
+    WHERE p.P_Em_Id = ?
+    GROUP BY p.Pre_ID
+    ORDER BY p.Date DESC
+  `;
+
+  db.query(query, [P_Em_Id], (err, results) => {
+    if (err) {
+      console.error('Error generating summary:', err);
+      return res.status(500).send('Error generating summary');
+    }
+
+    let summary = `Medical Summary for Patient ID: ${P_Em_Id}\n\n`;
+    results.forEach(record => {
+      summary += `Date: ${new Date(record.Date).toLocaleDateString()}\n`;
+      summary += `Notes: ${record.Notes}\n`;
+      if (record.Medications) {
+        summary += `Medications: ${record.Medications}\n`;
+      }
+      summary += '------------------------\n';
+    });
+
+    res.json({ summary });
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

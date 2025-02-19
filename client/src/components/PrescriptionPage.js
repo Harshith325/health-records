@@ -32,39 +32,41 @@ const PrescriptionPage = () => {
 
   return (
     <>
-    <div className="header">
-      <h1>PulsePoint App</h1>
-    </div>
-    <div className="container mt-5">
-      <h2 style={{ textAlign: 'center' }}>Your Prescriptions</h2>
-      <hr />
-      <div className="shadow p-3 mb-5 bg-body-tertiary rounded">
-      <table className="table">
-  <thead>
-    <tr>
-      <th>Prescription ID</th>
-      <th>Date</th>
-      <th>Notes</th>
-      <th>Medications</th>
-      <th>Patient ID</th>
-      <th>Doctor ID</th>
-    </tr>
-  </thead>
-  <tbody>
-    {prescriptions.map(prescription => (
-      <tr key={prescription.Pre_ID}>
-        <td>{prescription.Pre_ID}</td>
-        <td>{prescription.Date}</td>
-        <td>{prescription.Notes}</td>
-        <td>{prescription.Medications || 'No medications'}</td>
-        <td>{prescription.P_Em_Id}</td>
-        <td>{prescription.D_Em_Id}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+      <div className="header">
+        <h1>PulsePoint</h1>
       </div>
-    </div>
+      <div className="container mt-5">
+        <h2 style={{ textAlign: 'center' }}>Your Prescriptions</h2>
+        <hr />
+        <div className="shadow p-3 mb-5 bg-body-tertiary rounded">
+          <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+            <table className="table">
+              <thead style={{ position: 'sticky', top: 0, background: 'white' }}>
+                <tr>
+                  <th>Prescription ID</th>
+                  <th>Date</th>
+                  <th>Notes</th>
+                  <th>Medications</th>
+                  <th>Patient ID</th>
+                  <th>Doctor ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                {prescriptions.map(prescription => (
+                  <tr key={prescription.Pre_ID}>
+                    <td>{prescription.Pre_ID}</td>
+                    <td>{new Date(prescription.Date).toLocaleDateString()}</td>
+                    <td>{prescription.Notes}</td>
+                    <td>{prescription.Medications || 'No medications'}</td>
+                    <td>{prescription.P_Em_Id}</td>
+                    <td>{prescription.D_Em_Id}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

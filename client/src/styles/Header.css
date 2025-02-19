@@ -1,14 +1,15 @@
 .header {
   background-color: white;
-  padding: 15px 30px;
+  padding: 10px 20px;  /* Reduced padding */
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);  /* Lighter shadow */
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 50px;  /* Fixed height */
 }
 
 .header-content {
@@ -17,7 +18,6 @@
   justify-content: center;
   max-width: 1200px;
   width: 100%;
-  padding: 0 20px;
 }
 
 .header-logo {
@@ -28,8 +28,8 @@
 
 .header h1 {
   margin: 0;
+  font-size: 1.5rem;  /* Smaller font size */
   color: #333;
-  font-size: 24px;
   font-weight: 600;
   text-align: center;
 }
